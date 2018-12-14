@@ -3,15 +3,17 @@
   <head>
     <meta charset="utf-8">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <base href='/'></base>
+    <base href='<%= htmlWebpackPlugin.options.base %>'></base>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-    <link rel="shortcut icon" type="image/png" href="public/favicon.png"/>
-    <meta name="theme-color" content="#f60">
-    <link rel="manifest" href="manifest.json">
   </head>
   <body>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <% if (Array.isArray(htmlWebpackPlugin.options.bundles)) { %>
+      <% for (var bundle of htmlWebpackPlugin.options.bundles) { %>
+        <script type="text/javascript" src="<%=bundle %>"></script>
+      <% } %>
+    <% } %>
   </body>
 </html>

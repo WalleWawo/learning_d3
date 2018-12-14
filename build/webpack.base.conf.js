@@ -1,9 +1,9 @@
 'use strict'
 const path = require('path')
 const webpack = require('webpack')
+const { VueLoaderPlugin } = require('vue-loader')
 const vueConfig = require('./vue-loader.config')
-const config = require('../config')
-const urlPrefix = config.route.prefix
+const { prefix } = require('../config').route
 
 module.exports = {
   entry: {
@@ -12,7 +12,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: '[name].[hash].js',
-    publicPath: `${urlPrefix}/`
+    publicPath: `${prefix}/`
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -25,11 +25,17 @@ module.exports = {
   },
   module: {
     rules: [
+      // {
+      //   enforce: 'pre',
+      //   test: /\.(vue|js)$/,
+      //   loader: 'eslint-loader',
+      //   include: path.resolve(__dirname, '../src'),
+      //   exclude: /node_modules/
+      // },
       {
-        enforce: 'pre',
-        test: /\.(vue|js)$/,
-        loader: 'eslint-loader',
-        include: path.resolve(__dirname, '../src'),
+        test: /\.js$/,
+        loader: 'babel-loader',
+        include: path.resolve(__dirname, '../'),
         exclude: /node_modules/
       },
       {
@@ -38,18 +44,12 @@ module.exports = {
         options: vueConfig
       },
       {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: path.resolve(__dirname, '../src'),
-        exclude: /node_modules/
+        test: /\.pug$/,
+        loader: 'pug-plain-loader'
       },
       {
-        test: /\.css$/,
-        loader: ['vue-style-loader', 'css-loader']
-      },
-      {
-        test: /\.styl$/,
-        loader: ['css-loader', 'stylus-loader']
+        test: /\.styl(us)?$/,
+        loader: 'style-loader!css-loader!stylus-loader'
       },
       {
         test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.*)?$/,
@@ -64,6 +64,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.DEPLOY_ENV': JSON.stringify(process.env.DEPLOY_ENV)
-    })
+    }),
+    new VueLoaderPlugin()
   ]
 }
